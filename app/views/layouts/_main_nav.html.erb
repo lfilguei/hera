@@ -1,0 +1,61 @@
+<% if user_signed_in? %>
+<div class="row-fluid">
+    <div class="navbar">
+      <div class="navbar-inner" style="min-height: 30px; background-image: linear-gradient(to bottom, #E0E0E0, #ADADAD);">
+      	<ul class="nav" style="float:left;">
+	      	<li>
+				<a class="brand" style="padding:5px 15px;" href="/home">Home</a>
+			</li>
+		</ul>
+		<ul class="nav" style="float:right;">
+		 	<li>
+				<%= link_to "Painel De Controle", configuration_index_path, class: "brand", style: "padding:5px 15px;margin:auto;"%>
+			</li>
+			
+			<li class="divider-vertical" style="height:30px;"></li>
+			<li>
+				<%= link_to 'Sair', destroy_user_session_path, method: :delete, class: "brand", style: "padding:5px 15px;margin:auto;" %>
+			</li>
+		</ul>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <div class="navbar-inner", style="min-height: 20px;">
+        <ul class="nav">
+          <li class="<%= 'active' if current_page?(groups_path) %>">
+            <%= link_to "Vistoria", groups_path, style: "padding:0px 15px;"%>
+          </li>
+	  <li class="<%= 'active' if current_page?(buildings_groups_path) %>">
+            <%= link_to "Vistorias Recentes", buildings_groups_path, style: "padding:0px 15px;"%>
+          </li>
+          <li class="<%= 'active' if current_page?(equipment_index_path) %>">
+            <%= link_to "Ítem de Inspeção", equipment_index_path, style: "padding:0px 15px;"%>
+          </li>
+          <li class="<%= 'active' if current_page?(inspections_path) %>">
+            <%= link_to "Inspeções Pendentes", inspections_path, style: "padding:0px 15px;"%>
+          </li>
+          <li class="<%= 'active' if current_page?(inspections_index_history_path) %>">
+            <%= link_to "Inspeções Antigas", inspections_index_history_path, style: "padding:0px 15px;"%>
+          </li>
+          <li class="<%= 'active' if current_page?(equip_types_path) %>">
+            <%= link_to "Tipos de Item", equip_types_path, style: "padding:0px 15px;"%>
+          </li>
+          <li class="<%= 'active' if current_page?(buildings_path) %>">
+            <%= link_to "Localização", buildings_path, style: "padding:0px 15px;"%>
+          </li>
+          <!-- <li><h6>Bem Vindo, <%= current_user.try(:name) %></h6></li> -->
+        </ul>
+	
+      </div>
+    </div>
+    
+    <!--<div class="navbar">
+      <div class="navbar-inner", style="min-height: 20px;">
+        <ul class="nav">
+        </ul>
+      </div>
+    </div>
+    -->
+</div>
+<% end -%>

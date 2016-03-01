@@ -1,0 +1,129 @@
+<style>
+.img-container
+{
+	padding:		1px;
+	width:		300px;
+	height:		200px;
+}
+
+.image-details
+{
+
+	max-width:		300px;
+	max-height:		200px;
+}
+
+.hrdivider
+{
+	border: 1px solid #000;
+}
+
+.hrdivider2
+{
+	border: 2px solid #000;
+}
+
+.cleartable {
+	border: none;
+}
+
+.borderedtable
+{
+	border: 1px solid #000;
+}
+
+.td-info-x {
+    width: 30px;
+    height: 35px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+
+.glyphicon-sim {
+    font-size: 30px;
+    color: green;
+}
+
+.glyphicon-nao {
+    font-size: 30px;
+    color: red;
+}
+.glyphicon-nsa {
+    font-size: 30px;
+    color: blue;
+}
+
+div.floating-menu {position:fixed;left:5px;top:5px;background:orange;padding:5px;width:200px;z-index:100;border: black solid 1px;}
+div.floating-menu a, div.floating-menu h3 {display:block;margin:0 0.5em;}
+
+</style>
+
+<script type="text/javascript">
+function prepareAndSubmit()
+{
+	selectAllSelectEntries(document.getElementById('authors'));
+	selectAllSelectEntries(document.getElementById('reviewers'));
+	selectAllSelectEntries(document.getElementById('presentation'));
+	selectAllSelectEntries(document.getElementById('methodology'));
+	document.forms["reporter"].submit();
+}
+
+function selectAllSelectEntries(select) 
+{
+	for ( var i = 0, l = select.options.length, o; i < l; i++ ) {
+		o = select.options[i];
+		o.selected = true;
+	}
+}
+</script>
+
+<div class="floating-menu">
+<h4>Relatório</h4>
+<a href="javascript:void(0);" onclick='prepareAndSubmit();'>Gerar Versão Para Impressão</a>
+</div>
+
+<%= form_tag({controller: "report", action: "report_print"}, method: "post",id: "reporter") do %>
+
+<input type="hidden" id="id" name="id" value="<%= params[:id] %>" />
+<input type="hidden" id="t" name="t" value="<%= params[:t] %>" />
+
+<% if (@type == 1) %>
+	Modo de Impressão: Inspeção
+	<%= render :partial => 'inspections/showData' %>
+
+	<div style="page-break-after: always"></div>
+
+	<%= render :partial => 'inspections/showChecklist' %>
+<% end %>
+<% if (@type == 2) %>
+	Modo de Edição e Inserção de Dados
+	<%= render :partial => 'showCover' %>
+	<div style="page-break-after: always"></div>
+	<%= render :partial => 'showIndex' %>	
+	<div style="page-break-after: always"></div>
+	<%= render :partial => 'showPresentation' %>
+	<div style="page-break-after: always"></div>
+	<%= render :partial => 'showMethodology' %>
+	<div style="page-break-after: always"></div>
+	<% @order.each do |ido| %>
+		<% @inspecoes = Inspection.joins(equipment: :equip_type).where(group_id: @vistoria.id).where("equipment.equip_type_id = ?",ido[0]) %>
+		<!-- Inspeções em <%= EquipType.find(ido[0]).kind %>	<br/> -->
+		<% @inspecoes.each do |inspect| %>
+			<%= render :partial => 'inspections/showReportData', :locals => {:@inspection => inspect} %>
+			
+			<% parteintro_name = 'introd_' + inspect.id.to_s %>
+			<br/>
+			Parte Introdutória
+			<br/>
+			<%= text_area_tag parteintro_name , "", style: "width: 100%;"  %>
+			<br/>
+			<hr class="hrdivider" />
+			
+			<%= render :partial => 'inspections/showReference' %>
+			<%= render :partial => 'inspections/showChecklist', :locals => {:@inspection => inspect, :@answers => Answer.where(inspection_id: inspect.id)}  %>
+			<div style="page-break-after: always"></div>
+		<% end %>
+	<% end %>
+<% end %>
+<% end %>

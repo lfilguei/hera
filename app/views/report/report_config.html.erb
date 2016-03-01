@@ -1,0 +1,65 @@
+<h1>Configurações do Relatório</h1>
+<hr>
+
+<%= form_tag({controller: "report", action: "report_config_save"}, name: "reportform", method: "post") do %>
+	<%= label_tag(:lcr, "Ordem das Checklists no Relatório") %>
+	<br/>	
+	<%= select_tag "types", options_from_collection_for_select(@equiptypes, "id", "kind") %>
+	<%= link_to "[Adicionar]", "javascript:void(0);", onclick: "add_entry();"%>
+	<br/>
+	<%= select_tag "order", options_for_select(@previous_config), multiple: true, style: "height:200px;" %>
+	<%= link_to "[Remover Selecionado]", "javascript:void(0);", onclick: "remove_entry();"%>
+	<%= link_to "[Mover Para Cima]", "javascript:void(0);", onclick: "up();"%>
+	<%= link_to "[Mover Para Baixo]", "javascript:void(0);", onclick: "down();"%>
+	<br/>
+	<%= link_to "[Limpar Lista]", "javascript:void(0);", onclick: "clear_list();"%>
+	<hr/>
+	*Lembre sempre de Salvar qualquer alteração feita na ordem.<br/>
+	<button type='button' onclick='prepareAndSubmit()' >Salvar</button>
+<% end %>
+
+<script type="text/javascript">
+function add_entry() 
+{
+	var $options = $("#types > option:selected").clone();
+	$('#order').append($options);
+}
+
+function remove_entry()
+{
+	$("#order > option:selected").remove();
+}
+
+function up() {
+    var selected = $("#order").find(":selected");
+    var before = selected.prev();
+    if (before.length > 0)
+        selected.detach().insertBefore(before);
+}
+
+function down() {
+    var selected = $("#order").find(":selected");
+    var next = selected.next();
+    if (next.length > 0)
+        selected.detach().insertAfter(next);
+}
+
+function clear_list() 
+{
+	$("#order").empty();
+}
+
+function prepareAndSubmit()
+{
+	selectAllSelectEntries(document.getElementById('order'));
+	document.forms["reportform"].submit();
+}
+
+function selectAllSelectEntries(select) 
+{
+	for ( var i = 0, l = select.options.length, o; i < l; i++ ) {
+		o = select.options[i];
+		o.selected = true;
+	}
+}
+</script>

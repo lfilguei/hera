@@ -1,0 +1,135 @@
+<style>
+.img-container
+{
+	padding:		1px;
+	width:		300px;
+	height:		200px;
+}
+
+.image-details
+{
+
+	max-width:		300px;
+	max-height:		200px;
+}
+
+.hrdivider
+{
+	border: 1px solid #000;
+}
+
+.hrdivider2
+{
+	border: 2px solid #000;
+}
+
+.cleartable {
+	border: none;
+}
+
+.borderedtable
+{
+	border: 1px solid #000;
+}
+
+.td-info-x {
+    width: 30px;
+    height: 35px;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+
+.glyphicon-sim {
+    font-size: 30px;
+    color: green;
+}
+
+.glyphicon-nao {
+    font-size: 30px;
+    color: red;
+}
+.glyphicon-nsa {
+    font-size: 30px;
+    color: blue;
+}
+
+</style>
+
+<%= link_to "Ver Relatório Para Impressão", report_path(t: 1, id: @inspection.id), target: "_blank" %>
+<br/> 
+<%= render :partial => 'inspections/showData' %>
+
+<hr class="hrdivider2" />
+
+<%= render :partial => 'inspections/showReference' %>
+
+<%= render :partial => 'inspections/showChecklist' %>
+
+<hr class="hrdivider2" />
+
+<div class="container">
+  <table>
+    <tr>
+      <% if (@inspection.approved == 0) then %>
+      <% if (current_user.kind == "admin") %>
+      <td>
+        <%= link_to 'Aprovar', "javascript:void(0)",  method: :validate,  :onclick => "approve();", class: "btn btn-success"%>
+      </td>
+      <td>
+        <%= link_to 'Reprovar', "javascript:void(0)",  method: :disapprove,  :onclick => "repprove();", class: "btn btn-danger" %>
+      </td>
+      <!--% else %>
+        Apenas Adminstradores podem aprovar ou reprovar inspeções!-->
+      <% end %>
+      <% end %>
+
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+	function approve() {
+		if (confirm('Certeza que deseja aprovar a inspeção?')) {
+			//approve with ajax
+			$.ajax({
+				type: "GET",
+				url: "validate",
+				data: {id:<%=@inspection.id%>}
+				}
+			).done(function() {
+  				window.location.reload(true);
+			}
+			);
+			
+		}
+	}
+	
+	function repprove() {
+		if (confirm('Certeza que deseja reprovar a inspeção?')) {
+			//repprove with ajax
+			$.ajax({
+				type: "GET",
+				url: "disapprove",
+				data: {id:<%=@inspection.id%>}
+				}
+			).done(function() {
+  				window.location.reload(true);
+			}
+			);
+		}
+	}
+
+//make the img fix
+//$('img').error(function(){
+//       	$(this).hide();
+//});
+
+//$( document ).ready(function() {
+//	if ( $.browser.msie && $.browser.version < 9 ) {
+//		$('img').each(function(){
+//     			$(this).attr('src', $(this).attr('src'));
+//		});
+//	}	
+//});
+</script>
